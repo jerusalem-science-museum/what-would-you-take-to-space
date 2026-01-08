@@ -1,162 +1,195 @@
 @font-face {
-    font-family: "EzerEuro";
-    src: url("../fonts/EzerEuro-Bold.otf") format("opentype");
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
-  }
-  
-  @font-face {
-    font-family: "EzerEuro";
-    src: url("../fonts/EzerEuro-Light.otf") format("opentype");
-    font-weight: lighter;
-    font-style: normal;
-    font-display: swap;
-  }
+  font-family: "EzerEuro";
+  src: url("../fonts/EzerEuro-Bold.otf") format("opentype");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
 
-  @font-face {
-    font-family: "NotoSansArabic";
-    src: url("../fonts/NotoSansArabic.ttf") format("ttf");
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-  }
+@font-face {
+  font-family: "EzerEuro";
+  src: url("../fonts/EzerEuro-Light.otf") format("opentype");
+  font-weight: lighter;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "NotoSansArabic";
+  src: url("../fonts/NotoSansArabic.ttf") format("ttf");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
 
 body {
-    font-family: 'EzerEuro';
-    font-weight: bold;
+  font-family: 'EzerEuro';
+  font-weight: bold;
+  color:white;
+  background-image: url("../svg/bg.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
 }
 
-.description {
-    position: absolute;
-    top: 12vh;
-    right: 10%;
-    max-width: 33%;
-    text-align: start;
-    z-index: 3;
-  }
-  
-.description-title {
-    font-size: 4rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    color: white;
-    line-height: 6vh;
-  }
-  
-.description-subtitle {
-    font-size: 1.25rem;
-    margin: 0;
-    opacity: 0.9;
-    color: white;
-  }
-
-.padding-lr {
-    padding-left: 7.4%;
-    padding-right: 7.4%;
+/* Main container - always 9:16, letterboxed by viewport */
+.main-container {
+  aspect-ratio: 9 / 16;
+  width: 100vw;
+  height: 100vh;
+  max-width: calc(100vh * 9 / 16);
+  max-height: calc(100vw * 16 / 9);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
 }
 
-.blue {
-    color: blue;
+/* Page content fills the container */
+.page-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
 }
-h1 {
-    color: green;
+
+/* Top section - 50% of viewport */
+.top-part {
+  position: relative;
+  width: 100%;
+  height: 50%;
+  flex-shrink: 0;
 }
-html, body {
-    height: 100%;
-    margin: 0;
-  }
+
+
+/* Rocket choices container with rocket background */
+.rocket-choices {
+  position: absolute;
+  left: 19%;
+  bottom: -15%;
+  width: 30%;
+  height: 100%;
+  background-image: url("../png/rocket no blocks.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: bottom center;
+  z-index: 2;
   
-  body {
-    background-image: url("../svg/bg.svg");
-    background-repeat: no-repeat;
-    background-size: cover;    /* scale to cover entire viewport */
-    background-position: center;
-    margin: 0;
-    height: 100%;
-  }
-  .page-content {
-    min-height: 100vh;
-    box-sizing: border-box;
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-  }
+  /* Position the buttons using padding */
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  gap: 2%;
+  box-sizing: border-box;
+  padding-left: 7%;
+  padding-bottom: 0%;
+  padding-top: 24%;
+  padding-right: 8%;
+}
 
 .white-block {
-    background-image: url("../svg/white\ block.svg");
-    background-repeat: no-repeat;
-    background-size: contain;       /* or specific px */
-    background-position: center;
-    background-color: transparent;
-    border: none;
-    padding: 1rem 2rem;             /* text inset */
-    cursor: pointer;
-    width: 100%;
-    height: 100%;
-  }
+  background-image: url("../svg/white\ block.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  background-color: transparent;
+  border: none;
+  /* padding: 1rem 2rem; */
+  cursor: pointer;
+  /*! width: 20%; */
+  height: auto;
+  aspect-ratio: 1;
+  flex: 0 0 auto;
+  font-size: inherit;
+  font-family: inherit;
+  color:inherit;
+  text-align: center;
+}
 
-  .top-part {
-    position: relative;
-  }
-  
-  .rocket {
-    position: absolute;
-    left: 19%;
-    bottom: -94px;
-    height: 100vmin;              /* smaller so it fits */
-    z-index: 2;
-  }
-  
-  /* Put the choices in the same coordinate system */
-  .rocket-choices {
-    position: absolute;
-    bottom: -1vmin;              /* above bottom of the screen */
-    left: 13.5vh;
-    width: 20vmin;
-    height: 56vmin;
-  
-    display: flex;
-    flex-direction: column;
-    gap: 2vmin;
-    z-index: 3;
-  }
-.choice-grid-wrapper {
-    display: flex;
-    align-items: flex-start;
-    padding-bottom: 5.75vh;
-    padding-top: 7.3vh;
-    padding-left: 6vw;
-    padding-right: 6vw;
-    z-index: 3;
-  }
+.halo {
+  position: absolute;
+  bottom: 4.5%;
+  width: auto;
+  z-index: 1;
+  left: 23%;
+  right: -7%;
+}
 
-.choice-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6.3vw;  /* spacing between items */
-    row-gap: 1.9vh;  /* or use gap for both */
-    width: 100%;
-    height: 100%;
+/* Description text - respects RTL/LTR */
+.description {
+  position: absolute;
+  top: 22%;
+  /*! inset-inline-end: 71%; */
+  max-width: 48%;
+  text-align: start;
+  z-index: 3;
+  /*! left: 44%; */
+  right: 4%;
 }
 
 
-.halo {
-    position: absolute;
-    left: 23%;
-    bottom: 1.5vh;
-    height: 26vh;
-    z-index: 1;
+.description-title {
+  font-size: clamp(1.5rem, 4vw, 4rem);
+  font-weight: 700;
+  margin-bottom: 1.5%;
+  color: white;
+  line-height: 1.2;
+}
+
+.description-subtitle {
+  font-size: clamp(0.9rem, 1.25vw, 1.25rem);
+  margin: 0;
+  opacity: 0.9;
+  color: white;
+}
+
+
+.choice-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 7%;
+  row-gap: 2.9%;
+  /*! width: 98%; */
+  height: 100%;
+  padding-right: 8%;
+  padding-top: 11%;
+  padding-bottom: 10%;
+  padding-left: 8%;
 }
 
 .purple-block {
-    background-image: url("../svg/purple\ block.svg");
-    background-repeat: no-repeat;
-    background-size: contain;       /* or specific px */
-    background-position: center;
-    background-color: transparent;
-    border: none;
-    padding: 1rem 2rem;             /* text inset */
-    cursor: pointer;
-    width: 100%;
-    height: 100%;
+  background-image: url("../svg/purple\ block.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  background-color: transparent;
+  border: none;
+  /*! padding: 1rem 2rem; */
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  color: inherit;
+  font-family: inherit;
+  font-size: 8vh; /* Adjust this value to fill the button */
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* Prevents text from affecting button size */
+  text-overflow: ellipsis; /* Optional: shows ... if text is too long */
 }

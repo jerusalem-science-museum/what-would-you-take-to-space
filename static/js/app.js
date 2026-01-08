@@ -1,5 +1,5 @@
 function applyLanguage(lang) {
-    document.querySelectorAll(".choice").forEach(el => {
+    document.querySelectorAll(".lang").forEach(el => {
       const key = el.dataset.key;
       el.textContent = translations[lang][key] || "";
     });

@@ -142,7 +142,7 @@ body {
 
 
 .description-title {
-  font-size: clamp(1.5rem, 4vw, 4rem);
+  font-size: clamp(1.5rem, 4vh, 4rem);
   font-weight: 700;
   margin-bottom: 1.5%;
   color: white;
@@ -150,12 +150,11 @@ body {
 }
 
 .description-subtitle {
-  font-size: clamp(0.9rem, 1.25vw, 1.25rem);
+  font-size: clamp(0.9rem, 1.25vh, 1.25rem);
   margin: 0;
   opacity: 0.9;
   color: white;
 }
-
 
 .choice-grid {
   display: grid;
@@ -171,6 +170,7 @@ body {
   padding-left: 8%;
 }
 
+
 .purple-block {
   background-image: url("../svg/purple\ block.svg");
   background-repeat: no-repeat;
@@ -185,11 +185,12 @@ body {
   box-sizing: border-box;
   color: inherit;
   font-family: inherit;
-  font-size: 8vh; /* Adjust this value to fill the button */
+  font-size: clamp(1.5rem, 3.5vh, 4rem); /* Adjust this value to fill the button */
   text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden; /* Prevents text from affecting button size */
   text-overflow: ellipsis; /* Optional: shows ... if text is too long */
+  font-weight: inherit;
 }

@@ -75,25 +75,38 @@ body {
 }
 
 .language-choice {
+  position: absolute;
+  top: 8%;
+  right: 12%;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  /*! gap: 3%; */
-  /*! row-gap: 2.9%; */
-
-  /*! width: 98%; */
-  height: 58%;
-  padding-right: 24%;
-  padding-top: 82%;
-  /*! padding-bottom: 21%; */
-  padding-left: 20%;
+  gap: 2rem;
+  z-index: 4;
+  direction: ltr; /* Force LTR layout regardless of page direction */
 }
 
+
 .lang-button {
-  position: absolute;
   background-image: url("../svg/lang\ block.svg");
   background-repeat: no-repeat;
-  background-size: contain;
-  background-position: bottom center;
+  background-size: 100% 100%;
+  background-position: center;
+  background-color: transparent;
+  border: none;
+  width: 200%;
+  height: 300%;
+  color: black;
+  font-family: inherit;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+  line-height: 100%;
+  box-sizing: border-box;
+}
+
+.lang-button.selected {
+  background-image: url("../svg/lang\ block selected.svg");
+  color: white;
 }
 /* Rocket choices container with rocket background */
 .rocket{
@@ -131,17 +144,23 @@ body {
   background-size: contain;
   background-position: center;
   background-color: transparent;
-  border: none;
-  /* padding: 1rem 2rem; */
+ border: none;
+  padding: 8%;
   cursor: pointer;
-  /*! width: 20%; */
-  height: auto;
-  aspect-ratio: 1;
-  flex: 0 0 auto;
-  font-size: inherit;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  color: inherit;
   font-family: inherit;
-  color:inherit;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* Prevents text from affecting button size */
+  font-weight: inherit;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .halo {
@@ -149,10 +168,42 @@ body {
   bottom: 4.5%;
   width: auto;
   z-index: 1;
-  left: 23%;
-  right: -7%;
+  left: 24%;
+  right: -8%;
 }
 
+.launch-button {
+  background-image: url("../svg/launch.svg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-position: center;
+  background-color: transparent;
+  border: none;
+  position: absolute;
+  bottom: 0%;
+  left: 55%;
+  width: 27%;
+  height: 12%;
+  z-index: 4;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: bold;
+  color: black;
+  font-size: 2vh;
+  text-align: center;
+  line-height: 4vh;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: opacity 0.2s;
+}
+
+.launch-button:disabled,
+.launch-button.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
 /* Description text - respects RTL/LTR */
 .description {
   position: absolute;
@@ -194,6 +245,7 @@ body {
   padding-bottom: 10%;
   padding-left: 8%;
   z-index: 3;
+  direction: ltr; /* Force LTR layout regardless of page direction */
 }
 
 
@@ -204,19 +256,89 @@ body {
   background-position: center;
   background-color: transparent;
   border: none;
-  /*! padding: 1rem 2rem; */
+  padding: 8%;
   cursor: pointer;
   width: 100%;
   height: 100%;
   box-sizing: border-box;
   color: inherit;
   font-family: inherit;
-  font-size: clamp(1.5rem, 3.5vh, 4rem); /* Adjust this value to fill the button */
   text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden; /* Prevents text from affecting button size */
-  text-overflow: ellipsis; /* Optional: shows ... if text is too long */
   font-weight: inherit;
+  transition: background-image 0.2s, opacity 0.2s;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.purple-block.selected {
+  background-image: url("../svg/purple\ block selected.svg");
+}
+
+.purple-block.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+/* Wordcloud page styles */
+.wordcloud-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.wordcloud-image-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 90%;
+  margin: 2rem 0;
+}
+
+.wordcloud-image-container img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.back-button {
+  background-image: url("../svg/launch.svg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-position: center;
+  background-color: transparent;
+  border: none;
+  padding: 8%;
+  cursor: pointer;
+  width: clamp(8rem, 20vw, 15rem);
+  height: clamp(3rem, 8vw, 5rem);
+  box-sizing: border-box;
+  color: black;
+  font-family: inherit;
+  text-align: center;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-weight: inherit;
+  transition: background-image 0.2s;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  margin-top: 1rem;
 }

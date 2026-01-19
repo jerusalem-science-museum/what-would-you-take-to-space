@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" , dir="rtl">
+<html lang="en" dir="ltr">
 
 <head>
     <!-- <meta name="viewport"
@@ -16,25 +16,26 @@
         <div class="page-content">
             <div class="top-part">
                 <div class="language-choice">
-                    <button class="lang-button"/>
-                    <button class="lang-button"/>
-                    <button class="lang-button"/>
+                    <button class="lang-button" type="button" data-lang="en">EN</button>
+                    <button class="lang-button" type="button" data-lang="he">HE</button>
+                    <button class="lang-button" type="button" data-lang="ar">AR</button>
                 </div>
                 <div class="rocket">
                     <div class="rocket-choices">
-                        <button class="white-block"></button>
-                        <button class="white-block"></button>
-                        <button class="white-block"></button>
+                        <button class="white-block" data-index="0"></button>
+                        <button class="white-block" data-index="1"></button>
+                        <button class="white-block" data-index="2"></button>
                     </div>
-            </div>
+                </div>
                 <img src="/static/svg/halo.svg" class="halo">
                 <div class="description">
-                    <h1 class="description-title" data-i18n="title-key">תאכלו מה תאכלו</h1>
-                    <p class="description-subtitle" data-i18n="subtitle-key">מה תקחו איתכם לחלל אה ימצחיקים</p>
+                    <h1 class="description-title" data-key="selectionPage"></h1>
+                    <p class="description-subtitle" data-key="selectObjects"></p>
                 </div>
+                <button class="launch-button" data-key="goToCloud"></button>
             </div>
             <div class="choice-grid" id="objects-grid">
-                <button class="purple-block" data-key="item1">שלום</button>
+                <button class="purple-block" data-key="item1"></button>
                 <button class="purple-block" data-key="item2"></button>
                 <button class="purple-block" data-key="item3"></button>
                 <button class="purple-block" data-key="item4"></button>
@@ -49,6 +50,7 @@
             </div>
         </div>
     </div>
+    <script src="{{url_for('static', filename='js/app.js')}}"></script>
 </body>
 
 </html>

@@ -8,7 +8,8 @@ import matplotlib.colors
 app = Flask(__name__)
 
 # Define paths
-WORDCLOUD_PATH = os.path.join('static', 'png', 'wordcloud.png')
+WORDCLOUD_DIR = os.path.join('static', 'wordcloud')
+LANGUAGES = ['en', 'he', 'ar']
 VOTES_FILE = 'votes.json'
 
 @app.route('/')
@@ -57,10 +58,44 @@ def submit_vote():
     with open(VOTES_FILE, 'w', encoding='utf-8') as f:
         json.dump(votes, f, indent=4)
     
-    # Generate wordcloud with default language (en)
-    generate_wordcloud(votes, language='en')
+    # Wordcloud is already precomputed via /preview-wordcloud endpoint
+    # No need to regenerate here - this makes the response instant
     
     return jsonify({'success': True, 'redirect': url_for('wordcloud')})
+
+@app.route('/preview-wordcloud', methods=['POST'])
+def preview_wordcloud():
+    """Generate wordcloud preview with temporary vote counts (current votes + user selection)"""
+    data = request.get_json()
+    selected_items = data.get('items', [])
+    language = data.get('language', 'en')
+    
+    if len(selected_items) != 3:
+        return jsonify({'error': 'Must select exactly 3 items'}), 400
+    
+    # Load current votes
+    try:
+        with open(VOTES_FILE, 'r', encoding='utf-8') as f:
+            votes = json.load(f)
+    except FileNotFoundError:
+        votes = {
+            "item1": 0, "item2": 0, "item3": 0, "item4": 0,
+            "item5": 0, "item6": 0, "item7": 0, "item8": 0,
+            "item9": 0, "item10": 0, "item11": 0, "item12": 0,
+            "totalvotes": 0
+        }
+    
+    # Create temporary vote counts (current votes + user selection)
+    temp_votes = votes.copy()
+    for item_key in selected_items:
+        if item_key in temp_votes:
+            temp_votes[item_key] += 1
+    
+    # Generate wordcloud with temporary votes for all languages
+    # This does NOT modify votes.json file
+    generate_wordcloud_all_languages(temp_votes)
+    
+    return jsonify({'success': True})
 
 @app.route('/regenerate-wordcloud', methods=['POST'])
 def regenerate_wordcloud():
@@ -80,23 +115,34 @@ def regenerate_wordcloud():
             "totalvotes": 0
         }
     
-    # Generate wordcloud with specified language
-    generate_wordcloud(votes, language=language)
+    # Generate wordcloud for all languages
+    generate_wordcloud_all_languages(votes)
     
     # Return the image path with cache busting
     import time
-    return jsonify({'image_path': url_for('static', filename='png/wordcloud.png') + f'?t={int(time.time())}'})
+    image_filename = f'wordcloud_{language}.png'
+    return jsonify({'image_path': url_for('static', filename=f'wordcloud/{image_filename}') + f'?t={int(time.time())}'})
 
-def generate_wordcloud(votes, language='en'):
+def get_wordcloud_path(language='en'):
+    """Get the path for a language-specific wordcloud file"""
+    # Ensure wordcloud directory exists
+    os.makedirs(WORDCLOUD_DIR, exist_ok=True)
+    # All files use language suffix including _en
+    return os.path.join(WORDCLOUD_DIR, f'wordcloud_{language}.png')
+
+def generate_wordcloud(votes, language='en', output_path=None):
     """Generate word cloud image from vote counts"""
+    if output_path is None:
+        output_path = get_wordcloud_path(language)
+    
     # Filter out totalvotes from vote counts
     vote_counts = {k: v for k, v in votes.items() if k != 'totalvotes'}
     
     if not vote_counts or sum(vote_counts.values()) == 0:
         # Create a blank white image instead of trying to generate empty word cloud
         img = Image.new('RGB', (1200, 600), color='white')
-        img.save(WORDCLOUD_PATH)
-        return WORDCLOUD_PATH
+        img.save(output_path)
+        return output_path
     
     # Load translations to get item names
     translations_path = os.path.join('translations', f'{language}.json')
@@ -120,8 +166,8 @@ def generate_wordcloud(votes, language='en'):
     # Only generate if we have words
     if not word_freq:
         img = Image.new('RGB', (1200, 600), color='white')
-        img.save(WORDCLOUD_PATH)
-        return WORDCLOUD_PATH
+        img.save(output_path)
+        return output_path
     
     # Generate word cloud
     # Use appropriate font based on language
@@ -150,5 +196,14 @@ def generate_wordcloud(votes, language='en'):
     ).generate_from_frequencies(word_freq)
     
     # Save to file
-    wc.to_file(WORDCLOUD_PATH)
-    return WORDCLOUD_PATH
+    wc.to_file(output_path)
+    return output_path
+
+def generate_wordcloud_all_languages(votes):
+    """Generate wordcloud for all languages"""
+    for lang in LANGUAGES:
+        try:
+            generate_wordcloud(votes, language=lang)
+        except Exception as e:
+            print(f"Error generating wordcloud for language {lang}: {e}")
+            raise

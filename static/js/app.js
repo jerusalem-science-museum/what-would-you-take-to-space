@@ -1,7 +1,7 @@
 const translationsCache = {};
 let currentTranslations = {};
 let selectedItems = []; // Array of {gridButton, rocketIndex, key}
-let currentLanguage = "en";
+let currentLanguage = localStorage.getItem('selectedLanguage') || "en";
 
 const langDirections = {
   en: "ltr",
@@ -96,6 +96,12 @@ function updateGridStates() {
   
   // Update launch button state
   updateLaunchButtonState();
+  
+  // If exactly 3 items are selected and we're on index page, precompute wordcloud
+  if (selectedItems.length === 3 && !isWordcloudPage()) {
+    const selectedKeys = selectedItems.map(item => item.key);
+    precomputeWordcloud(selectedKeys);
+  }
 }
 
 function updateLaunchButtonState() {
@@ -164,17 +170,25 @@ function setLanguageAttributes(lang) {
   document.documentElement.setAttribute("dir", direction);
 }
 
-async function setLanguage(lang) {
+async function setLanguage(lang, shouldRegenerate = true) {
   try {
     currentLanguage = lang;
+    // Save language selection to localStorage
+    localStorage.setItem('selectedLanguage', lang);
+    
     const translations = await loadTranslations(lang);
     setLanguageAttributes(lang);
     applyTranslations(translations);
     updateLanguageButtonStates();
     
-    // If on wordcloud page, regenerate wordcloud with new language
+    // If on wordcloud page, just switch to the correct language image (no regeneration needed)
     if (isWordcloudPage()) {
-      await regenerateWordcloud(lang);
+      updateWordcloudImage(lang);
+    }
+    // If on index page with 3 items selected, regenerate preview wordcloud with new language
+    else if (!isWordcloudPage() && selectedItems.length === 3 && shouldRegenerate) {
+      const selectedKeys = selectedItems.map(item => item.key);
+      await precomputeWordcloud(selectedKeys);
     }
   } catch (error) {
     console.error(error);
@@ -184,6 +198,41 @@ async function setLanguage(lang) {
 function isWordcloudPage() {
   return window.location.pathname === '/wordcloud' || 
          document.querySelector('.wordcloud-container') !== null;
+}
+
+async function precomputeWordcloud(selectedKeys) {
+  try {
+    const response = await fetch('/preview-wordcloud', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        items: selectedKeys,
+        language: currentLanguage 
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to precompute wordcloud');
+    }
+  } catch (error) {
+    console.error('Error precomputing wordcloud:', error);
+  }
+}
+
+function getWordcloudImagePath(language) {
+  // Returns the path to the wordcloud image for a given language
+  // All languages use suffix including _en
+  return `/static/wordcloud/wordcloud_${language}.png`;
+}
+
+function updateWordcloudImage(language) {
+  // Update wordcloud image src to the correct language version
+  const wordcloudImage = document.getElementById('wordcloud-image');
+  if (wordcloudImage) {
+    wordcloudImage.src = getWordcloudImagePath(language);
+  }
 }
 
 async function regenerateWordcloud(language) {
@@ -200,13 +249,13 @@ async function regenerateWordcloud(language) {
       throw new Error('Failed to regenerate wordcloud');
     }
     
-    const data = await response.json();
-    const wordcloudImage = document.getElementById('wordcloud-image');
-    if (wordcloudImage) {
-      wordcloudImage.src = data.image_path;
-    }
+    // All languages are regenerated, just update the image to the requested language
+    updateWordcloudImage(language);
+    
+    return getWordcloudImagePath(language);
   } catch (error) {
     console.error('Error regenerating wordcloud:', error);
+    throw error;
   }
 }
 
@@ -215,10 +264,20 @@ async function handleLaunchButtonClick() {
     return; // Should not happen if button is properly disabled
   }
   
+  const launchButton = document.querySelector(".launch-button");
+  if (launchButton) {
+    launchButton.disabled = true;
+    launchButton.classList.add("disabled");
+    const originalText = launchButton.textContent;
+    // Optionally show loading state
+    // launchButton.textContent = "Loading...";
+  }
+  
   // Collect selected item keys
   const selectedKeys = selectedItems.map(item => item.key);
   
   try {
+    // Submit vote and redirect immediately (wordcloud already precomputed)
     const response = await fetch('/submit-vote', {
       method: 'POST',
       headers: {
@@ -231,6 +290,7 @@ async function handleLaunchButtonClick() {
       throw new Error('Failed to submit vote');
     }
     
+    // Redirect immediately - wordcloud is already generated
     const data = await response.json();
     if (data.redirect) {
       window.location.href = data.redirect;
@@ -238,6 +298,12 @@ async function handleLaunchButtonClick() {
   } catch (error) {
     console.error('Error submitting vote:', error);
     alert('Failed to submit vote. Please try again.');
+    
+    // Restore button state on error
+    if (launchButton) {
+      launchButton.disabled = false;
+      launchButton.classList.remove("disabled");
+    }
   }
 }
 
@@ -287,7 +353,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  setLanguage("en");
+  // Initialize language from localStorage (or default to "en") without regenerating wordcloud on page load
+  setLanguage(currentLanguage, false);
+  
+  // If on wordcloud page, initialize the image with the current language
+  if (isWordcloudPage()) {
+    updateWordcloudImage(currentLanguage);
+  }
   
   // Initialize launch button state (should be disabled initially, only on index page)
   if (!isWordcloudPage()) {

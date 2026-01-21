@@ -46,17 +46,15 @@ body {
 /* Main container - always 9:16, letterboxed by viewport */
 .main-container {
   aspect-ratio: 9 / 16;
-  width: 100vh;
-  height: calc(100vh * 16 / 9);
-  max-width: 100vh;
-  max-height: 100vw;
+  width: 100vw;
+  height: 100vh;
+  max-width: calc(100vh * 9 / 16);
+  max-height: calc(100vw * 16 / 9);
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  transform: rotate(90deg);
-  transform-origin: center center;
 }
 
 /* Page content fills the container */
@@ -238,6 +236,19 @@ body {
   white-space: nowrap;
   overflow: hidden;
   transition: opacity 0.2s;
+}
+
+/* Language-specific font sizes for launch button */
+.lang-he .launch-button {
+  font-size: 4vh; /* Adjust as needed */
+}
+
+.lang-en .launch-button {
+  font-size: 3vh; /* Adjust as needed */
+}
+
+.lang-ar .launch-button {
+  font-size: 3.2vh; /* Adjust as needed */
 }
 
 .launch-button:disabled,

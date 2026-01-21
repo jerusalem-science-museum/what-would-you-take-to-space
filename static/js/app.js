@@ -131,12 +131,6 @@ function updateGridStates() {
   
   // Update launch button state
   updateLaunchButtonState();
-  
-  // If exactly 3 items are selected and we're on index page, precompute wordcloud
-  if (selectedItems.length === 3 && !isWordcloudPage()) {
-    const selectedKeys = selectedItems.map(item => item.key);
-    precomputeWordcloud(selectedKeys);
-  }
 }
 
 function updateLaunchButtonState() {
@@ -259,16 +253,42 @@ async function precomputeWordcloud(selectedKeys) {
 }
 
 function getWordcloudImagePath(language) {
-  // Returns the path to the wordcloud image for a given language
-  // All languages use suffix including _en
+  // Returns the path to the final wordcloud image
+  // User only sees the final wordcloud, never the preview
   return `/static/wordcloud/wordcloud_${language}.png`;
+}
+
+function commitWordcloud() {
+  // Copy preview wordclouds to final location
+  return fetch('/commit-wordcloud', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  }).then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error('Failed to commit wordcloud');
+  }).catch(error => {
+    console.error('Error committing wordcloud:', error);
+    // Return resolved promise so calling code doesn't wait forever
+    return Promise.resolve();
+  });
 }
 
 function updateWordcloudImage(language) {
   // Update wordcloud image src to the correct language version
+  // Always show the final wordcloud (user never sees preview)
   const wordcloudImage = document.getElementById('wordcloud-image');
   if (wordcloudImage) {
-    wordcloudImage.src = getWordcloudImagePath(language);
+    const path = getWordcloudImagePath(language);
+    // Add cache busting to ensure fresh image
+    const newSrc = path + '?t=' + Date.now();
+    console.log('Updating wordcloud image to:', newSrc);
+    wordcloudImage.src = newSrc;
+  } else {
+    console.error('Wordcloud image element not found');
   }
 }
 
@@ -313,8 +333,13 @@ async function handleLaunchButtonClick() {
   // Collect selected item keys
   const selectedKeys = selectedItems.map(item => item.key);
   
+  // Start preview wordcloud generation in background (don't wait for it)
+  precomputeWordcloud(selectedKeys).catch(error => {
+    console.error('Error generating preview wordcloud:', error);
+  });
+  
   try {
-    // Submit vote and redirect immediately (wordcloud already precomputed)
+    // Submit vote and redirect immediately
     const response = await fetch('/submit-vote', {
       method: 'POST',
       headers: {
@@ -327,7 +352,7 @@ async function handleLaunchButtonClick() {
       throw new Error('Failed to submit vote');
     }
     
-    // Redirect immediately - wordcloud is already generated
+    // Redirect immediately - don't wait for wordcloud generation
     const data = await response.json();
     if (data.redirect) {
       window.location.href = data.redirect;
@@ -400,6 +425,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     setTimeout(() => {
       window.location.href = '/';
     }, 20000);
+  }
+  
+  // If on index page, commit any pending preview wordclouds
+  if (!isWordcloudPage()) {
+    commitWordcloud();
   }
   
   // Initialize launch button state (should be disabled initially, only on index page)

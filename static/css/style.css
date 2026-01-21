@@ -231,11 +231,33 @@ body {
   color: black;
   font-size: inherit;
   text-align: center;
-  line-height: inherit;
   box-sizing: border-box;
   white-space: nowrap;
   overflow: hidden;
   transition: opacity 0.2s;
+  padding: 0;
+  line-height: 12vh;
+}
+
+.launch-button .text-content {
+  line-height: 1;
+  text-align: center;
+  display: block;
+  position: relative;
+  transform: translateY(-50%);
+}
+
+/* Language-specific top positions for launch button text content */
+.lang-he .launch-button .text-content {
+  top: 29%; /* Adjust as needed */
+}
+
+.lang-en .launch-button .text-content {
+  top: 20%; /* Adjust as needed */
+}
+
+.lang-ar .launch-button .text-content {
+  top: 24%; /* Adjust as needed */
 }
 
 /* Language-specific font sizes for launch button */

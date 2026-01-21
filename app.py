@@ -94,35 +94,37 @@ def preview_wordcloud():
         if item_key in temp_votes:
             temp_votes[item_key] += 1
     
-    # Generate wordclouds to temporary files first, then copy to final location
-    # This ensures existing wordclouds aren't overwritten if generation fails
-    temp_files = {}
+    # Generate wordclouds to preview files (preview_ prefix)
+    # These will be copied to final location when user leaves wordcloud page
     try:
-        # Generate to temporary files
         for lang in LANGUAGES:
-            temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.png', dir=WORDCLOUD_DIR)
-            temp_file.close()
-            temp_files[lang] = temp_file.name
-            generate_wordcloud(temp_votes, language=lang, output_path=temp_file.name)
-        
-        # Only copy to final location if all generations succeeded
-        for lang in LANGUAGES:
-            final_path = get_wordcloud_path(lang)
-            shutil.copy2(temp_files[lang], final_path)
+            preview_path = os.path.join(WORDCLOUD_DIR, f'preview_wordcloud_{lang}.png')
+            generate_wordcloud(temp_votes, language=lang, output_path=preview_path)
         
         return jsonify({'success': True})
     except Exception as e:
         # If anything fails, don't overwrite existing wordclouds
         app.logger.error(f'Error generating preview wordcloud: {e}')
         return jsonify({'error': str(e)}), 500
-    finally:
-        # Clean up temporary files
-        for temp_path in temp_files.values():
-            try:
-                if os.path.exists(temp_path):
-                    os.remove(temp_path)
-            except:
-                pass
+
+@app.route('/commit-wordcloud', methods=['POST'])
+def commit_wordcloud():
+    """Copy preview wordclouds to final location when user leaves wordcloud page"""
+    try:
+        for lang in LANGUAGES:
+            preview_path = os.path.join(WORDCLOUD_DIR, f'preview_wordcloud_{lang}.png')
+            final_path = get_wordcloud_path(lang)
+            
+            # Only copy if preview file exists
+            if os.path.exists(preview_path):
+                shutil.copy2(preview_path, final_path)
+                # Clean up preview file after copying
+                os.remove(preview_path)
+        
+        return jsonify({'success': True})
+    except Exception as e:
+        app.logger.error(f'Error committing wordcloud: {e}')
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/regenerate-wordcloud', methods=['POST'])
 def regenerate_wordcloud():

@@ -3,39 +3,6 @@ let currentTranslations = {};
 let selectedItems = []; // Array of {gridButton, rocketIndex, key}
 let currentLanguage = localStorage.getItem('selectedLanguage') || "en";
 
-// Cache font sizes by language and text (loaded from server)
-let fontSizeCache = {}; // Key format: `${language}:${text}`
-
-// Load font sizes from server
-async function loadFontSizes() {
-  try {
-    const response = await fetch('/font-sizes');
-    if (response.ok) {
-      fontSizeCache = await response.json();
-    }
-  } catch (e) {
-    console.warn('Failed to load font sizes:', e);
-  }
-}
-
-// Debounce save function to avoid excessive writes
-let saveTimeout;
-function saveFontSizes() {
-  clearTimeout(saveTimeout);
-  saveTimeout = setTimeout(async () => {
-    try {
-      await fetch('/font-sizes', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ fontSizes: fontSizeCache })
-      });
-    } catch (e) {
-      console.warn('Failed to save font sizes:', e);
-    }
-  }, 500); // Wait 500ms after last change before saving
-}
 
 const langDirections = {
   en: "ltr",
@@ -59,95 +26,6 @@ async function loadTranslations(lang) {
 }
 
 
-function splitTextIntoLines(text) {
-  // Split text by spaces and put each word on a separate line
-  const words = text.trim().split(/\s+/);
-  
-  // Return array with each word as a separate line
-  return words.filter(word => word.length > 0);
-}
-
-function calculateOptimalFontSize(element, lines, text, language) {
-  // Check cache first
-  const cacheKey = `${language}:${text}`;
-  if (fontSizeCache[cacheKey] !== undefined) {
-    return fontSizeCache[cacheKey];
-  }
-  
-  // Get the container dimensions (accounting for padding)
-  const container = element;
-  const computedStyle = window.getComputedStyle(container);
-  const paddingTop = parseFloat(computedStyle.paddingTop) || 0;
-  const paddingBottom = parseFloat(computedStyle.paddingBottom) || 0;
-  const paddingLeft = parseFloat(computedStyle.paddingLeft) || 0;
-  const paddingRight = parseFloat(computedStyle.paddingRight) || 0;
-  
-  const availableWidth = container.offsetWidth - paddingLeft - paddingRight;
-  const availableHeight = container.offsetHeight - paddingTop - paddingBottom;
-  
-  if (availableWidth <= 0 || availableHeight <= 0) {
-    const fallbackSize = 16;
-    fontSizeCache[cacheKey] = fallbackSize;
-    saveFontSizes(); // Save to server
-    return fallbackSize;
-  }
-  
-  // Find the longest line for width calculation
-  const longestLine = lines.reduce((a, b) => a.length > b.length ? a : b);
-  
-  // Get text direction (RTL or LTR) for proper measurement
-  // Use document direction (set by language) rather than container direction
-  const direction = document.documentElement.getAttribute('dir') || 'ltr';
-  
-  // Create a temporary span to measure text
-  const tempSpan = document.createElement('span');
-  tempSpan.style.visibility = 'hidden';
-  tempSpan.style.position = 'absolute';
-  tempSpan.style.whiteSpace = 'nowrap';
-  tempSpan.style.fontFamily = computedStyle.fontFamily;
-  tempSpan.style.fontWeight = computedStyle.fontWeight;
-  tempSpan.style.direction = direction; // Important for RTL languages (Hebrew, Arabic)
-  tempSpan.style.top = '-9999px';
-  tempSpan.textContent = longestLine;
-  document.body.appendChild(tempSpan);
-  
-  // Binary search for optimal font size
-  let minSize = 8;
-  let maxSize = 200;
-  let optimalSize = minSize;
-  const lineHeight = 1.1;
-  const totalLines = lines.length;
-  const margin = 0.85; // Use 85% of available space
-  
-  while (minSize <= maxSize) {
-    const testSize = Math.floor((minSize + maxSize) / 2);
-    tempSpan.style.fontSize = `${testSize}px`;
-    
-    const textWidth = tempSpan.offsetWidth;
-    const singleLineHeight = tempSpan.offsetHeight;
-    const totalTextHeight = singleLineHeight * totalLines * lineHeight;
-    
-    // Check if text fits within container
-    const widthFits = textWidth <= (availableWidth * margin);
-    const heightFits = totalTextHeight <= (availableHeight * margin);
-    
-    if (widthFits && heightFits) {
-      optimalSize = testSize;
-      minSize = testSize + 1;
-    } else {
-      maxSize = testSize - 1;
-    }
-  }
-  
-  document.body.removeChild(tempSpan);
-  
-  const finalSize = Math.max(optimalSize, 8); // Ensure minimum size
-  // Cache the result and save to server
-  fontSizeCache[cacheKey] = finalSize;
-  saveFontSizes(); // Save to server
-  return finalSize;
-}
-
 function formatTextForBox(element, text) {
   // Remove any existing text-content wrapper
   const existingContent = element.querySelector('.text-content');
@@ -155,49 +33,19 @@ function formatTextForBox(element, text) {
     existingContent.remove();
   }
   
-  // Split text into lines
-  const lines = splitTextIntoLines(text);
-  
   // Get text direction from document (set by setLanguageAttributes)
   // This ensures RTL languages (Hebrew, Arabic) render correctly
   const direction = document.documentElement.getAttribute('dir') || 'ltr';
-  
-  // Check if font size is cached
-  const cacheKey = `${currentLanguage}:${text}`;
-  const cachedFontSize = fontSizeCache[cacheKey];
   
   // Create text-content wrapper
   const textContent = document.createElement('div');
   textContent.className = 'text-content';
   textContent.style.direction = direction; // Set direction for RTL support
   textContent.style.textAlign = 'center'; // Center alignment for both directions
-  
-  // If we have a cached font size, apply it immediately to avoid jitter
-  if (cachedFontSize !== undefined) {
-    textContent.style.fontSize = `${cachedFontSize}px`;
-  }
-  
-  // Create divs for each line
-  lines.forEach((line) => {
-    const lineDiv = document.createElement('div');
-    lineDiv.textContent = line;
-    lineDiv.style.direction = direction; // Set direction for each line
-    textContent.appendChild(lineDiv);
-  });
+  textContent.textContent = text.trim();
   
   // Add to element
   element.appendChild(textContent);
-  
-  // Only calculate if not cached (first time only)
-  if (cachedFontSize === undefined) {
-    // Use double requestAnimationFrame to ensure layout is complete for first calculation
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        const fontSize = calculateOptimalFontSize(element, lines, text, currentLanguage);
-        textContent.style.fontSize = `${fontSize}px`;
-      });
-    });
-  }
 }
 
 function applyTranslations(translations) {
@@ -238,7 +86,7 @@ function updateLanguageButtonStates() {
 }
 
 function updateRocketBlocks() {
-  const rocketBlocks = document.querySelectorAll(".white-block");
+  const rocketBlocks = document.querySelectorAll(".rocket-choices .white-block");
   
   // Clear all rocket blocks first
   rocketBlocks.forEach((block) => {
@@ -355,6 +203,11 @@ function setLanguageAttributes(lang) {
   const direction = langDirections[lang] || "ltr";
   document.documentElement.setAttribute("lang", lang);
   document.documentElement.setAttribute("dir", direction);
+  
+  // Remove all language classes
+  document.documentElement.classList.remove("lang-he", "lang-en", "lang-ar");
+  // Add current language class
+  document.documentElement.classList.add(`lang-${lang}`);
 }
 
 async function setLanguage(lang, shouldRegenerate = true) {
@@ -512,7 +365,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // Set up rocket block click handlers
-  const rocketBlocks = document.querySelectorAll(".white-block");
+  const rocketBlocks = document.querySelectorAll(".rocket-choices .white-block");
   rocketBlocks.forEach((block) => {
     block.addEventListener("click", () => {
       handleRocketBlockClick(block);
@@ -537,9 +390,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // Load font sizes from server first
-  await loadFontSizes();
-  
   // Initialize language from localStorage (or default to "en") without regenerating wordcloud on page load
   setLanguage(currentLanguage, false);
   

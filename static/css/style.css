@@ -55,6 +55,8 @@ body {
   flex-direction: column;
   position: relative;
   overflow: hidden;
+  transform: rotate(90deg);
+  transform-origin: center center;
 }
 
 /* Page content fills the container */
@@ -174,7 +176,7 @@ body {
 }
 
 .lang-en .white-block {
-  font-size: 2vh; /* Adjust as needed */
+  font-size: 1.6vh; /* Adjust as needed */
 }
 
 .lang-ar .white-block {

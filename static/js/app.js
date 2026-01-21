@@ -396,6 +396,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   // If on wordcloud page, initialize the image with the current language
   if (isWordcloudPage()) {
     updateWordcloudImage(currentLanguage);
+    // Auto-redirect to home after 20 seconds
+    setTimeout(() => {
+      window.location.href = '/';
+    }, 20000);
   }
   
   // Initialize launch button state (should be disabled initially, only on index page)

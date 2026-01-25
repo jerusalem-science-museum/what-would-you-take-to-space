@@ -41,25 +41,30 @@ body {
   font-family: 'EzerEuro';
   font-weight: bold;
   color:white;
-  background-image: url("../svg/bg.svg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
+  margin: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: black;
+  overflow: hidden;
 }
 
 /* Main container - always 9:16, letterboxed by viewport */
 .main-container {
+  background-image: url("../png/bg_v2_crop.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
   aspect-ratio: 9 / 16;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
+  background-color: black;
   max-width: calc(100vh * 9 / 16);
   max-height: calc(100vw * 16 / 9);
   margin: 0 auto;
   display: flex;
+  justify-content: center;
+  align-items: center;
   flex-direction: column;
   position: relative;
   overflow: hidden;
@@ -67,8 +72,9 @@ body {
 
 /* Page content fills the container */
 .page-content {
-  width: 100%;
+  width: auto;
   height: 100%;
+  aspect-ratio: 9/16;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -115,89 +121,92 @@ body {
   box-sizing: border-box;
   font-size: 2.5vh; /* Constant font size - text is always EN/HE/AR */
 }
+.lang-button .text-content{
+  width: 100%;
+  height: 74%;
+  display: grid;
+  place-items: initial;
+}
 
 .lang-button.selected {
   background-image: url("../svg/lang\ block selected.svg");
   color: white;
 }
-/* Rocket choices container with rocket background */
-.rocket{
-  position: absolute;
-  left: 20%;
-  /*! bottom: 4%; */
-  width: 31%;
-  height: 112%;
-  background-image: url("../png/rocket no blocks.png");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: bottom center;
-  z-index: 2;
-  top: 7%;
-}
+
+
 
 .rocket-choices {
-    display: grid;
-    grid-template-rows: repeat(3, 1fr);
-    /*! gap: 3%; */
-    /*! row-gap: 2.9%; */
-  
-    /*! width: 98%; */
-    height: 58%;
-    padding-right: 24%;
-    padding-top: 82%;
-    /*! padding-bottom: 21%; */
-    padding-left: 20%;
+  position: absolute;
+  left: 12%;
+  width: 39%;
+  height: 106%;
+  z-index: 2;
+  top: 47%;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  height: 33%;
 }
 
 
-.white-block {
-  background-image: url("../svg/white\ block.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-  background-color: transparent;
- border: none;
-  padding: 8%;
-  cursor: pointer;
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  color: inherit;
-  font-family: inherit;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden; /* Prevents text from affecting button size */
-  font-weight: inherit;
-  white-space: normal;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
+.rocket-button {
+background-image: url("../svg/rocket_button.svg");
+background-repeat: no-repeat;
+background-size: cover;
+background-position: center;
+background-color: transparent;
+border: none;
+/*! padding: 8%; */
+cursor: pointer;
+width: 100%;
+height: 100%;
+box-sizing: border-box;
+color: inherit;
+font-family: inherit;
+text-align: center;
+display: grid;
+/* flex-direction: column; */
+place-items: center;
+align-items: center;
+justify-content: center;
+overflow: hidden; /* Prevents text from affecting button size */
+font-weight: inherit;
+white-space: normal;
+word-wrap: break-word;
+overflow-wrap: break-word;
 }
 
 /* Language-specific font sizes for white blocks */
-.lang-he .white-block {
-  font-size: 2.6vh; /* Hebrew font size */
+.lang-he .rocket-button {
+  font-size: 2.4vh; /* Hebrew font size */
 }
 
-.lang-en .white-block {
-  font-size: 1.6vh; /* Adjust as needed */
+.lang-en .rocket-button {
+  font-size: 1.8vh; /* Adjust as needed */
 }
 
-.lang-ar .white-block {
+.lang-ar .rocket-button {
   font-size: 2vh; /* Adjust as needed */
   font-family: "Cairo", "NotoSansArabic", sans-serif;
 }
 
-.white-block .text-content {
+.rocket-button .text-content {
   width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  line-height: 1.1;
+  height: 74%;
+  display: grid;
+  place-items: initial;
+}
+
+/* Language-specific heights for rocket button text content */
+.lang-he .rocket-button .text-content {
+  height: 71%; /* Adjust as needed */
+}
+
+.lang-en .rocket-button .text-content {
+  height: 51%; /* Adjust as needed */
+}
+
+.lang-ar .rocket-button .text-content {
+  height: 78%; /* Adjust as needed */
 }
 
 .back-button .text-content {
@@ -222,15 +231,15 @@ body {
 }
 
 .launch-button {
-  background-image: url("../svg/launch.svg");
+  background-image: url("../svg/launch_button.svg");
   background-repeat: no-repeat;
-  background-size: 100% 100%;
+  background-size: 140% 140%;
   background-position: center;
   background-color: transparent;
   border: none;
   position: absolute;
-  bottom: 0%;
-  left: 55%;
+  bottom: 2%;
+  left: 17%;
   width: 27%;
   height: 12%;
   z-index: 4;
@@ -302,15 +311,16 @@ body {
 
 /* Language-specific top positions for description */
 .lang-he .description {
-  top: 10%;
+  top: 58%;
 }
 
 .lang-en .description {
-  top: 15%; /* Adjust as needed */
+  top: 64%;
+  right: 3%;
 }
 
 .lang-ar .description {
-  top: 15%; /* Adjust as needed */
+  top: 68%;
 }
 
 
@@ -372,33 +382,7 @@ body {
 }
 
 
-.purple-block {
-  background-image: url("../svg/purple\ block.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-  background-color: transparent;
-  border: none;
-  padding: 8%;
-  cursor: pointer;
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  color: inherit;
-  font-family: inherit;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden; /* Prevents text from affecting button size */
-  font-weight: inherit;
-  transition: background-image 0.2s, opacity 0.2s;
-  white-space: normal;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  color: #8c9eff;
-}
+
 
 /* Language-specific font sizes for purple blocks */
 .lang-he .purple-block {
@@ -406,7 +390,7 @@ body {
 }
 
 .lang-en .purple-block {
-  font-size: 1.5vh; /* Adjust as needed */
+  font-size: 2vh; /* Adjust as needed */
 }
 
 .lang-ar .purple-block {
@@ -422,10 +406,12 @@ body {
   align-items: center;
   justify-content: center;
   line-height: 1.1;
+  transform: translateY(-11%);
 }
 
 .purple-block.selected {
-  background-image: url("../svg/purple\ block selected.svg");
+  background-image: url("../svg/rocket_button.svg");
+  background-size:  110% 157%;
   color: white;
 }
 
@@ -518,4 +504,49 @@ body {
 /* Language-specific font families for Arabic */
 .lang-ar .back-button {
   font-family: "Cairo", "NotoSansArabic", sans-serif;
+}
+
+.row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  width: max-content;
+  margin: 10px auto;
+  gap: 2vh;
+}
+
+.row-3 {
+  width: 100%;
+  justify-content: space-between;
+}
+
+.row-3 .purple-block {
+  justify-self: center;
+}
+.purple-block {
+  background-image: url("../svg/item_button.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  background-color: transparent;
+  background-size:  110% 140%;
+  border: none;
+  display: inline-block;
+  vertical-align: top; /* Align tops, heights match widest sibling */
+  padding: 0.35em 0.9em;
+ 
+  font-family: inherit;
+  font-weight: inherit;
+  /* border: 1px solid #ccc; */
+  white-space: nowrap; /* Prevent text wrap */
+  cursor: pointer;
+  box-sizing: border-box;
+  /* min-height: 50px;  */
+}
+
+.button-container {
+  position: absolute;
+  top: 67%; /* Vertical offset */
+  width: 90%;
+  left: 5%;
 }

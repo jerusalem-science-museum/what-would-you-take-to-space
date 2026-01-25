@@ -54,7 +54,7 @@ function applyTranslations(translations) {
   // Apply translations to all elements with data-key (excluding rocket blocks and description elements)
   document.querySelectorAll("[data-key]").forEach((el) => {
     // Skip rocket blocks - they're handled separately
-    if (el.classList.contains("white-block")) {
+    if (el.classList.contains("rocket-button")) {
       return;
     }
     // Skip description elements - they have their own styling
@@ -86,7 +86,7 @@ function updateLanguageButtonStates() {
 }
 
 function updateRocketBlocks() {
-  const rocketBlocks = document.querySelectorAll(".rocket-choices .white-block");
+  const rocketBlocks = document.querySelectorAll(".rocket-choices .rocket-button");
   
   // Clear all rocket blocks first
   rocketBlocks.forEach((block) => {
@@ -390,7 +390,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // Set up rocket block click handlers
-  const rocketBlocks = document.querySelectorAll(".rocket-choices .white-block");
+  const rocketBlocks = document.querySelectorAll(".rocket-choices .rocket-button");
   rocketBlocks.forEach((block) => {
     block.addEventListener("click", () => {
       handleRocketBlockClick(block);

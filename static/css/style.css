@@ -320,7 +320,7 @@ overflow-wrap: break-word;
 }
 
 .lang-ar .description {
-  top: 68%;
+  top: 64%;
 }
 
 
@@ -343,12 +343,13 @@ overflow-wrap: break-word;
 }
 
 .lang-en .description-title {
-  font-size: 5vh; /* Adjust as needed */
+  font-size: 4.4vh; /* Adjust as needed */
 }
 
 .lang-ar .description-title {
   font-size: 5vh; /* Adjust as needed */
   font-family: "Cairo", "NotoSansArabic", sans-serif;
+  line-height: 1.1;
 }
 
 /* Language-specific font sizes for description subtitle */
@@ -361,8 +362,9 @@ overflow-wrap: break-word;
 }
 
 .lang-ar .description-subtitle {
-  font-size: 2.8vh; /* Adjust as needed */
+  font-size: 2.4vh; /* Adjust as needed */
   font-family: "Cairo", "NotoSansArabic", sans-serif;
+  line-height: 1.4;
 }
 
 .choice-grid {
@@ -390,11 +392,11 @@ overflow-wrap: break-word;
 }
 
 .lang-en .purple-block {
-  font-size: 2vh; /* Adjust as needed */
+  font-size: 2.4vh; /* Adjust as needed */
 }
 
 .lang-ar .purple-block {
-  font-size: 2vh; /* Adjust as needed */
+  font-size: 2.5vh; /* Adjust as needed */
   font-family: "Cairo", "NotoSansArabic", sans-serif;
 }
 

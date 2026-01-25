@@ -1,5 +1,5 @@
 {
-  "item1": "Family photo",
+  "item1": "Holy utensils",
   "item2": "Favorite book",
   "item3": "Personal diary",
   "item4": "Smartphone",
@@ -13,7 +13,7 @@
   "item12": "Letter from home",
   "item13": "Religious items",
   "selectionPage": "What would you take to space?",
-  "selectObjects": "Select up to 3 items",
+  "selectObjects": "Choose your favorite personal items",
   "rocketQuestion": "[PLACEHOLDER: Fill in the main question text here]",
   "rocketInstructions": "[PLACEHOLDER: Fill in the instructions text here]",
   "selected": "Selected",

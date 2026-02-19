@@ -1,9 +1,12 @@
 #!/bin/bash
 
-cd /home/mada/Documents/what-would-you-take-to-space
+# Resolve the directory this script lives in (no hardcoded paths)
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+cd "$SCRIPT_DIR"
 
 source .venv/bin/activate
-# Start Flask app in background with nohup
+
+# Start Flask app in background
 nohup flask run > flask.log 2>&1 &
 
 # Wait for port 5000 to be available
@@ -13,8 +16,18 @@ until nc -z localhost 5000; do
 done
 echo "Flask app is ready!"
 
-# Open chromium in kiosk mode
-chromium \
+# Detect which chromium binary is available
+CHROMIUM_CMD=""
+if command -v chromium-browser &>/dev/null; then
+  CHROMIUM_CMD="chromium-browser"
+elif command -v chromium &>/dev/null; then
+  CHROMIUM_CMD="chromium"
+else
+  echo "ERROR: Chromium not found!"
+  exit 1
+fi
+
+$CHROMIUM_CMD \
   --kiosk \
   --password-store=basic \
   --no-sandbox \

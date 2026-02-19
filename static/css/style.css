@@ -230,6 +230,8 @@ font-weight: inherit;
 white-space: normal;
 word-wrap: break-word;
 overflow-wrap: break-word;
+-webkit-tap-highlight-color: transparent;
+tap-highlight-color: transparent;
 }
 
 /* Language-specific font sizes for white blocks */
@@ -251,6 +253,11 @@ overflow-wrap: break-word;
   height: 74%;
   display: grid;
   place-items: initial;
+  transition: opacity 0.1s ease;
+}
+
+.rocket-button:active .text-content {
+  opacity: 0.5;
 }
 
 /* Language-specific heights for rocket button text content */

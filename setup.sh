@@ -119,12 +119,13 @@ if [[ "$CONFIGURE_TOUCH" == "y" ]]; then
   echo "--- xinput devices ---"
   xinput list
   echo ""
+  read -rp "Enter the touchscreen device name (from the list above): " TOUCH_DEVICE
+
+  echo ""
   echo "--- xrandr outputs ---"
   xrandr
   echo ""
-
-  read -rp "Enter the touchscreen device name (from xinput list above): " TOUCH_DEVICE
-  read -rp "Enter the display output name (from xrandr above): " DISPLAY_OUTPUT
+  read -rp "Enter the display output name (from the list above): " DISPLAY_OUTPUT
 
   # Update fix_touch.sh with the user's values
   sed -i "s|^xinput map-to-output .*|xinput map-to-output \"$TOUCH_DEVICE\" $DISPLAY_OUTPUT|" "$SCRIPT_DIR/fix_touch.sh"

@@ -48,19 +48,13 @@ chmod +x "$SCRIPT_DIR/run_app.sh" "$SCRIPT_DIR/fix_touch.sh"
 # =========================================================================
 echo ""
 echo "=== Installing AnyDesk ==="
-ANYDESK_KEYRING="/etc/apt/keyrings/keys.anydesk.com.asc"
-ANYDESK_LIST="/etc/apt/sources.list.d/anydesk-stable.list"
 
-# Official method (Feb 2025+): store the ASCII key directly, no dearmoring
-sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://keys.anydesk.com/repos/DEB-GPG-KEY -o "$ANYDESK_KEYRING"
-sudo chmod a+r "$ANYDESK_KEYRING"
-
-echo "deb [signed-by=$ANYDESK_KEYRING] https://deb.anydesk.com all main" \
-  | sudo tee "$ANYDESK_LIST" >/dev/null
-
-sudo apt update
-sudo apt install -y anydesk
+# Download the .deb directly — avoids repo/GPG key issues entirely
+ANYDESK_DEB="/tmp/anydesk.deb"
+wget -O "$ANYDESK_DEB" "https://download.anydesk.com/linux/anydesk_amd64.deb" \
+  || curl -fsSL -o "$ANYDESK_DEB" "https://download.anydesk.com/linux/anydesk_amd64.deb"
+sudo apt install -y "$ANYDESK_DEB"
+rm -f "$ANYDESK_DEB"
 
 # Start service and set password
 sudo systemctl enable anydesk.service

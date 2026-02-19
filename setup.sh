@@ -20,7 +20,7 @@ echo ""
 echo ""
 echo "=== Installing system packages ==="
 sudo apt update
-sudo apt install -y python3 python3-venv python3-pip git unclutter netcat-openbsd
+sudo apt install -y python3 python3-venv python3-pip git unclutter netcat-openbsd curl ca-certificates
 
 # =========================================================================
 # 2. Chromium (package name varies across Mint versions)
@@ -48,15 +48,16 @@ chmod +x "$SCRIPT_DIR/run_app.sh" "$SCRIPT_DIR/fix_touch.sh"
 # =========================================================================
 echo ""
 echo "=== Installing AnyDesk ==="
-ANYDESK_KEYRING="/usr/share/keyrings/anydesk.gpg"
+ANYDESK_KEYRING="/etc/apt/keyrings/keys.anydesk.com.asc"
 ANYDESK_LIST="/etc/apt/sources.list.d/anydesk-stable.list"
 
-wget -qO- "https://keys.anydesk.com/repos/DEB-GPG-KEY" \
-  | gpg --dearmor \
-  | sudo tee "$ANYDESK_KEYRING" >/dev/null
+# Official method (Feb 2025+): store the ASCII key directly, no dearmoring
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://keys.anydesk.com/repos/DEB-GPG-KEY -o "$ANYDESK_KEYRING"
+sudo chmod a+r "$ANYDESK_KEYRING"
 
-echo "deb [signed-by=$ANYDESK_KEYRING] http://deb.anydesk.com/ all main" \
-  | sudo tee "$ANYDESK_LIST"
+echo "deb [signed-by=$ANYDESK_KEYRING] https://deb.anydesk.com all main" \
+  | sudo tee "$ANYDESK_LIST" >/dev/null
 
 sudo apt update
 sudo apt install -y anydesk

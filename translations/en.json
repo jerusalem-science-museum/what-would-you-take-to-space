@@ -11,17 +11,11 @@
   "item10": "Seashell",
   "item11": "Country flag",
   "item12": "Letter from home",
-  "item13": "Religious items",
   "selectionPage": "What would you take to space?",
   "selectObjects": "Choose your favorite personal items",
-  "rocketQuestion": "[PLACEHOLDER: Fill in the main question text here]",
-  "rocketInstructions": "[PLACEHOLDER: Fill in the instructions text here]",
-  "selected": "Selected",
-  "clearAll": "Clear All",
   "goToCloud": "Launch!",
   "backToSelection": "Back",
   "wordCloud": "Word Cloud",
-  "loading": "Loading...",
   "noVotes": "No votes yet. Be the first to vote!",
   "refresh": "Refresh"
 }

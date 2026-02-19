@@ -11,17 +11,11 @@
   "item10": "צדף",
   "item11": "דגל המדינה",
   "item12": "מכתב מהבית",
-  
   "selectionPage": "מה תיקחו לחלל?",
   "selectObjects": "בחרו את החפצים האישיים המועדפים עליכם",
-  "rocketQuestion": "[PLACEHOLDER: מלא כאן את טקסט השאלה הראשי]",
-  "rocketInstructions": "[PLACEHOLDER: מלא כאן את טקסט ההוראות]",
-  "selected": "נבחר",
-  "clearAll": "נקה הכל",
   "goToCloud": "שגר!",
   "backToSelection": "חזרה",
   "wordCloud": "ענן מילים",
-  "loading": "טוען...",
   "noVotes": "אין הצבעות עדיין. היה הראשון להצביע!",
   "refresh": "רענון"
 }

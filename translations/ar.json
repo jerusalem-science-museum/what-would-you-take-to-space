@@ -11,17 +11,11 @@
   "item10": "صدفة",
   "item11": "علم البلد",
   "item12": "رسالة من المنزل",
-  "item13": "معدات طقسية",
   "selectionPage": "ماذا ستأخذ إلى الفضاء؟",
   "selectObjects": "اختروا الأغراض الشخصية المفضلة لديكم",
-  "rocketQuestion": "[PLACEHOLDER: املأ نص السؤال الرئيسي هنا]",
-  "rocketInstructions": "[PLACEHOLDER: املأ نص التعليمات هنا]",
-  "selected": "محدد",
-  "clearAll": "مسح الكل",
   "goToCloud": "إطلاق!",
   "backToSelection": "العودة",
   "wordCloud": "سحابة الكلمات",
-  "loading": "جاري التحميل...",
   "noVotes": "لا توجد أصوات بعد. كن أول من يصوت!",
   "refresh": "تحديث"
 }

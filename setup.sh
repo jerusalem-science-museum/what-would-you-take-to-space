@@ -8,10 +8,6 @@ echo "Project directory: $SCRIPT_DIR"
 echo "(Run kiosk-base-setup.sh first on a fresh machine if you haven't already.)"
 echo ""
 
-# --- Collect sudo upfront ---
-sudo -v
-echo ""
-
 # =========================================================================
 # 1. Python venv & dependencies
 # =========================================================================

@@ -4,8 +4,11 @@ set -euo pipefail
 echo "=== Kiosk Base Setup for Linux Mint (Cinnamon) ==="
 echo ""
 
-# --- Collect sudo upfront ---
+# --- Collect inputs upfront ---
 sudo -v
+
+read -sp "Enter AnyDesk password (or press Enter to skip): " ANYDESK_PASSWORD
+echo ""
 echo ""
 
 # =========================================================================
@@ -55,8 +58,6 @@ sleep 3
 ANYDESK_ID=$(anydesk --get-id 2>/dev/null || echo "(not available yet)")
 echo "AnyDesk ID: $ANYDESK_ID"
 
-read -sp "Enter AnyDesk password (or press Enter to skip): " ANYDESK_PASSWORD
-echo ""
 if [[ -n "$ANYDESK_PASSWORD" ]]; then
   echo "$ANYDESK_PASSWORD" | sudo anydesk --set-password
   echo "AnyDesk password set."

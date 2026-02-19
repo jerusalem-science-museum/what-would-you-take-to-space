@@ -51,8 +51,8 @@ echo "=== Installing AnyDesk ==="
 
 # Download the .deb directly — avoids repo/GPG key issues entirely
 ANYDESK_DEB="/tmp/anydesk.deb"
-wget -O "$ANYDESK_DEB" "https://download.anydesk.com/linux/anydesk-7.1.4-amd64.tar.gz" \
-  || curl -fsSL -o "$ANYDESK_DEB" "https://download.anydesk.com/linux/anydesk-7.1.4-amd64.tar.gz"
+wget -O "$ANYDESK_DEB" "https://download.anydesk.com/linux/anydesk_7.1.4-1_amd64.deb" \
+  || curl -fsSL -o "$ANYDESK_DEB" "https://download.anydesk.com/linux/anydesk_7.1.4-1_amd64.deb"
 sudo apt install -y "$ANYDESK_DEB"
 rm -f "$ANYDESK_DEB"
 
